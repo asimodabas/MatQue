@@ -1,0 +1,94 @@
+html, *{
+    padding: 0;
+    margin:  0;
+    box-sizing: border-box;
+}
+.btn:focus{
+    box-shadow: none;
+    outline: none;
+}
+label{
+    cursor: pointer;
+}
+[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{
+    display: none !important;
+}
+.wrapper{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+}
+.leftBar{
+    width: 300px;
+    max-height: 100%;
+    overflow-y: auto;
+}
+.rightBar{
+    width: 300px;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.content{
+    width: calc(100% - 600px);
+    max-height: 100%;
+    overflow-y: auto;
+}
+.bg-secondary{
+    background-color: rgb(143, 143, 143);
+}
+.custom-nav-item{
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 .5rem;
+}
+.custom-nav-item:hover,
+.custom-nav-item.active{
+    background-color: rgb(224, 224, 224);
+    cursor: pointer;
+    border-radius: .50rem;
+}
+.custom-nav-item:hover .nav-link{
+    color: rgb(53, 53, 53);
+}
+.nav-link{
+    color: white;
+}
+.pointer-move{
+    cursor: move;
+    user-select: none;
+}
+.droggable{
+    user-select: none;
+    border:  2px dotted #535353;
+    font-size: 1.5rem;
+}
+.droggable.over{
+    transition: all .4s;
+    background-color: #535353;
+    color: #ccc;
+}
+.exponentialItem{
+    width: 100px;
+    height: 70px;
+    margin: 10px 16px;
+    position: relative;
+}
+.exponentialItem input[type=text]{
+    position: absolute;
+}
+.exponentialItem input[type=text]:first-child{
+    width: 50px;
+    height: 50px;
+    bottom: 0;
+    left: 0;
+}
+.exponentialItem input[type=text]:last-child{
+    width: 35px;
+    height: 35px;
+    top: 0;
+    right: 0;
+}
