@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app_main">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/css/style.css" rel="stylesheet">
+</head>
+<body id="app_main" ng-controller="app_controller">
+    <div class="wrapper">
+        <div class="leftBar bg-secondary">
+            <ul class="nav px-4 d-grid gap-2 my-2">
+                <li class="nav-item my-3">
+                    <div class="d-flex flex-column justify-content-center">
+                        <span class="mw-100 fs-3 text-white fw-bolder text-center">Matque</span>
+                    </div>
+                </li>
+                <li class="nav-item custom-nav-item"><span class="nav-link pointer-move draggable" data-bs-type="Divier" data-bs-function="2" draggable="true">Bölünebilme Kuralları</span></li>
+                <li class="nav-item custom-nav-item"><span class="nav-link pointer-move draggable" data-bs-type="Exponential" data-bs-function="sum" draggable="true">Üslü Sayılar</span></li>
+                <li class="nav-item">
+                    <div class="custom-nav-item">
+                        <a class="nav-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#combinationPermutation" aria-expanded="false">Permütasyon - Kombinasyon</a>
+                    </div>
+                    <ul id="combinationPermutation" class="accordion-collapse collapse nav-item">
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move pointer-move draggable" data-bs-type="Permutation" data-bs-function="permutation" draggable="true">Permütasyon</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move pointer-move draggable" data-bs-type="Combination" data-bs-function="combination" draggable="true">Kombinasyon</span></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <div class="custom-nav-item">
+                        <a class="nav-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#problemsMenu" aria-expanded="false">Problemler</a>
+                    </div>
+                    <ul id="problemsMenu" class="accordion-collapse collapse nav-item">
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">Sayı Problemleri</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">Kesir Problemleri</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">Yaş Problemleri</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">Hareket Hız Problemleri</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">İşçi Emek Problemleri</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">Yüzde Problemleri</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">Kar Zarar Problemleri</span></li>
+                        <li class="nav-item custom-nav-item"><span class="nav-link pointer-move" draggable="true">Karışım Problemleri</span></li>
+                    </ul>
+                </li>
+                <li class="nav-item custom-nav-item"><span class="nav-link pointer-move draggable" data-bs-type="Functions" data-bs-function="functions" draggable="true">Fonksiyonlar</span></li>
+            </ul>
+        </div>
+        <div class="content bg-light">
+            <div class="container">
+                <span class="my-4 droggable d-block text-center py-4">Çözmek istediğiniz işlemi sürükleyiniz.</span>
+                <div ng-repeat="question in questions track by $index" ng-cloak="">
+                    <div class="w-100" ng-switch on="question.type">
+                        <div class="my-4 p-3" ng-switch-when="Divier"  ng-click="openProperties($index)" style="cursor: pointer;background-color: rgb(216, 216, 216);">
+                            <h5 ng-cloak="">{{question.function}} ile Bölünebilme</h5>
+                            <form class="row" ng-submit="calculator($index)">
+                                <input class="col-6" type="text" placeholder="Sayı Giriniz" pattern="[0-9]+" ng-model="question.input" required>
+                                <div class="col-6"><button type="submit" class="btn btn-primary">Hesapla</button></div>
+                                <div ng-bind="question.output" ng-cloak=""></div>
+                            </form>
+                        </div>
+                        <div class="my-4 p-3" ng-switch-when="Exponential" ng-click="openProperties($index)" style="cursor: pointer;background-color: rgb(216, 216, 216);">
+                            <h5 ng-cloak="">Üslü sayılarda {{question.function | ExponentialFunctionLabel}} işlemi</h5>
+                            <form class="row" ng-submit="calculator($index)">
+                                <div class="d-flex" style="max-width: 100%; overflow-x: auto;">
+                                    <div class="d-flex align-items-center" ng-repeat="(indexN, exponential) in question.exponentials track by indexN">
+                                        <div class="exponentialItem">
+                                            <input type="text" class="text-center" ng-model="exponential.base" pattern="-*[0-9]+" required>
+                                            <input type="text" class="text-center" ng-model="exponential.pow" pattern="-*[0-9]+" required>
+                                        </div>
+                                        <span class="fs-5" ng-if="indexN != (question.exponentials.length -1)" ng-cloak="">{{question.function | ExponentialFunctionOpt}}</span>
+                                    </div>
+                                </div>
+                                <div class="my-4">
+                                    <button type="submit" class="btn btn-primary">Hesapla</button>
+                                    <span ng-bind="question.output" ng-cloak=""></span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="my-4 p-3" ng-switch-when="Combination" ng-click="openProperties($index)" style="cursor: pointer;background-color: rgb(216, 216, 216);">
+                            <h5 ng-cloak="">Kombinasyon İşlemi</h5>
+                            <form ng-submit="calculator($index)" ng-switch on="question.isCluster">
+                                <div class="d-flex flex-column" ng-switch-when="false">
+                                    <div class="d-flex py-3 my-3 mw-100" style="overflow-x: auto;">
+                                       <div class="d-flex me-4 align-items-center" ng-repeat="(itemIndex, item) in question.opts track by itemIndex">
+                                            <span class="me-2">C</span>
+                                            <span>(</span>
+                                            <input type="text" class="mx-2 text-center" style="width: 80px;" placeholder="N" pattern="[0-9]+" ng-model="item.N" required>
+                                            <input type="text" class="mx-2 text-center" style="width: 80px;" placeholder="R" pattern="[0-9]+" ng-model="item.R" required>
+                                            <span>)</span>
+                                            <span class="ms-4 fs-4" ng-if="(itemIndex != (question.opts.length -1)) && (question.optLength > 1)" ng-cloak="">{{question.function | CombinationFunctionOpt}}</span>
+                                       </div>
+                                    </div>
+                                    <div class="my-2">
+                                        <button type="submit" class="btn btn-primary">Hesapla</button>
+                                    </div>
+                                    <div class="my-2" ng-bind="question.output" ng-cloak=""></div>
+                                </div>
+                                <div class="d-flex flex-column" ng-switch-when="true">
+                                    <div class="row mb-2">
+                                        <div class="col-6 px-2">
+                                            <span class="d-block">Küme elemanlarını giriniz (Örnek a, b, c, d)</span>
+                                            <input type="text" pattern="([a-zA-z0-9]+,)*([a-zA-Z0-9])" ng-model="question.cluster" required>
+                                        </div>
+                                        <div class="col-6 px-2">
+                                            <span class="d-block">Alt küme sayısını giriniz</span>
+                                            <input type="text" pattern="[0-9]+" ng-model="question.subClusterCount" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6 px-2">
+                                            <span class="d-block">Alt kümede bulunancak elemanları giriniz(Örnek a, b)</span>
+                                            <input type="text" pattern="([a-zA-z0-9]+,)*([a-zA-Z0-9])" ng-model="question.included">
+                                        </div>
+                                        <div class="col-6 px-2">
+                                            <span class="d-block">Alt kümede bulunmayacak elemanları giriniz(Örnek c, d)</span>
+                                            <input type="text" pattern="([a-zA-z0-9]+,)*([a-zA-Z0-9])" ng-model="question.notIncluded">
+                                        </div>
+                                    </div>
+                                    <div class="mb-2"><button type="submit" class="btn btn-primary">Hesapla</button></div>
+                                    <div class="mb-2" ng-bind="question.output" ng-cloak=""></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="my-4 p-3" ng-switch-when="Permutation" ng-click="openProperties($index)" style="cursor: pointer;background-color: rgb(216, 216, 216);">
+                            <h5 ng-cloak="">Permütasyon İşlemi</h5>
+                            <form ng-submit="calculator($index)" ng-switch on="question.isIdentical">
+                                <div class="d-flex flex-column" ng-switch-when="false">
+                                    <div class="d-flex py-3 mw-100 my-2" style="overflow-x: auto;">
+                                       <div class="d-flex pe-3 align-items-center" ng-repeat="(itemIndex, item) in question.opts track by itemIndex">
+                                            <span class="me-2">P</span>
+                                            <span>(</span>
+                                            <input type="text" class="mx-2 text-center" style="width: 80px;" placeholder="N" pattern="[0-9]+" ng-model="item.N" required>
+                                            <input type="text" class="mx-2 text-center" style="width: 80px;" placeholder="R" pattern="[0-9]+" ng-model="item.R" required>
+                                            <span>)</span>
+                                            <span class="ms-4 fs-4" ng-if="(itemIndex != (question.opts.length -1)) && (question.optLength > 1)" ng-cloak="">{{question.function | PermutationFunctionOpt}}</span>
+                                       </div>
+                                    </div>
+                                    <div class="my-2">
+                                        <button type="submit" class="btn btn-primary">Hesapla</button>
+                                    </div>
+                                    <div class="my-2" ng-bind="question.output" ng-cloak=""></div>
+                                </div>
+                                <div class="d-flex flex-column" ng-switch-when="true">
+                                    <div class="d-flex mw-100 mb-2" style="overflow-x: auto;">
+                                        <div class="d-flex align-items-center" ng-repeat="(itemIndex, item) in question.opts track by itemIndex">
+                                            <div class="d-flex flex-column justify-content-center mx-3" style="max-width: 250px;">
+                                                <div class="mt-2 mb-4">
+                                                    <span>Özdeş sayısını giriniz:</span>
+                                                    <input type="text" ng-model="item.identicalCount" ng-change="changeIndeticalCount(item)" pattern="[0-9]+" required>
+                                                </div>
+                                                <div class="d-flex justify-content-center">
+                                                    <input style="width: 50px;" type="text" placeholder="N" class="text-center" pattern="[0-9]+" ng-model="item.N" required>
+                                                    <span class="ms-2 fs-4">!</span>
+                                                </div>
+                                                <span class="my-3 w-100 bg-light" style="height: 3px;"></span>
+                                                <div class="d-flex py-2 mw-100" style="overflow-x: auto;">
+                                                    <div class="d-flex" ng-repeat="(indenticalIndex, indentical) in item.indenticals track by indenticalIndex">
+                                                        <input class="text-center" style="width: 50px;" placeholder="N{{(indenticalIndex + 1)}}" type="text" pattern="[0-9]+" ng-model="indentical.identical" required>
+                                                        <span class="ms-2 fs-4">!</span>
+                                                        <span class="mx-2 fs-4 text" ng-if="indenticalIndex != (item.indenticals.length - 1)">*</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="mx-2 fs-4" ng-if="(itemIndex != (question.opts.length -1)) && (question.optLength > 1)" ng-cloak="">{{question.function | PermutationFunctionOpt}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="my-2"><button type="submit" class="btn btn-primary">Hesapla</button></div>
+                                    <div class="mb-2" ng-bind="question.output" ng-cloak=""></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="my-4 p-3" ng-switch-when="Functions" ng-click="openProperties($index)" style="cursor: pointer;background-color: rgb(216, 216, 216);">
+                            <h5 ng-cloak="">Fonksiyonlar</h5>
+                            <form ng-submit="calculator($index)">
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex py-3 mw-100 my-2" style="overflow-x: auto;">
+                                       <div class="d-flex flex-column" ng-repeat="(itemIndex, item) in question.opts track by itemIndex">
+                                            <label class="my-3">
+                                                <span class="d-block">Parametre sayısını giriniz:</span>
+                                                <input type="text" class="my-1" ng-change="functionsParamsChange(item)" ng-model="item.parametersLenght">
+                                            </label>
+                                            <div class="d-flex mb-3 mw-100" style="overflow-x: auto;">
+                                                <input  type="text" class="mx-1 text-center" style="width: 50px;" placeholder="value" pattern="[0-9]+" ng-repeat="(paramIndex, param) in item.parameters track by paramIndex" ng-model="param.value">
+                                            </div>
+                                           <div class="d-flex align-items-center">
+                                                <div class="d-flex">
+                                                    <span class="fs-4">f</span>
+                                                    <span class="fs-4">(</span>
+                                                    <div class="d-flex" style="max-width: 200px;overflow-x: auto;">
+                                                        <div class="d-flex" ng-repeat="(paramIndex, param) in item.parameters track by paramIndex">
+                                                            <input type="text" class="mx-1 text-center" style="width: 50px;" placeholder="param" pattern="[a-zA-Z]+" ng-model="param.param" required>
+                                                            <span class="fs-4" ng-if="paramIndex != (item.parameters.length-1)">,</span>
+                                                        </div>
+                                                    </div>
+                                                    <span class="fs-4">)</span>
+                                                    <span class="fs-4">=</span>
+                                                </div>
+                                                <input type="text" class="mx-2 text-center" placeholder="Fonksiyon" ng-model="item.function" required>
+                                           </div>
+                                       </div>
+                                    </div>
+                                    <div class="my-2">
+                                        <button type="submit" class="btn btn-primary">Hesapla</button>
+                                    </div>
+                                    <div class="my-2" ng-bind="question.output" ng-cloak=""></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rightBar bg-secondary">
+            <div class="d-flex flex-column justify-content-center" ng-if="properties != null" ng-switch on="properties.type" ng-cloak="">
+                <div class="px-2 mt-4" ng-switch-when="Divier">
+                    <h5 class="text-white" ng-cloak="">Bölünebilme Kuralları</h5>
+                    <div class="form-input mb-2">
+                        <span class="d-block mb-1 text-white">İşlem Seçiniz:</span>
+                        <select class="form-control form-select" ng-change="propertiesChange()" ng-model="properties.function">
+                            <option value="2">2 ile Bölünebilme</option>
+                            <option value="3">3 ile Bölünebilme</option>
+                            <option value="4">4 ile Bölünebilme</option>
+                            <option value="5">5 ile Bölünebilme</option>
+                            <option value="6">6 ile Bölünebilme</option>
+                            <option value="7">7 ile Bölünebilme</option>
+                            <option value="8">8 ile Bölünebilme</option>
+                            <option value="9">9 ile Bölünebilme</option>
+                            <option value="10">10 ile Bölünebilme</option>
+                            <option value="11">11 ile Bölünebilme</option>
+                            <option value="12">12 ile Bölünebilme</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="px-2 mt-4" ng-switch-when="Exponential">
+                    <h5 class="text-white" ng-cloak="">Üslü sayılarda {{properties.function | ExponentialFunctionLabel}} işlemi</h5>
+                    <label class="my-3 w-100">
+                        <span class="d-block text-white w-100">Sayı adedi giriniz:</span>
+                        <input type="text" class="my-1 w-100"  ng-change="propertiesChange()" ng-model="properties.optLength">
+                    </label>
+                    <div class="form-input mb-2">
+                        <span class="d-block mb-1 text-white">İşlem Seçiniz:</span>
+                        <select class="form-control form-select" ng-change="propertiesChange()" ng-model="properties.function">
+                            <option value="sum">Toplama</option>
+                            <option value="sub">Çıkarma</option>
+                            <option value="mul">Çarpma</option>
+                            <option value="div">Bölme</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="px-2 mt-4" ng-switch-when="Combination">
+                    <h5 class="text-white" ng-cloak="">Kombinasyon işlemi</h5>
+                    <label class="mb-2 w-100" ng-if="!properties.isCluster">
+                        <span class="d-block text-white w-100">Eleman adedi giriniz:</span>
+                        <input type="text" class="my-1 w-100"  ng-change="propertiesChange()" ng-model="properties.optLength">
+                    </label>
+                    <div class="form-input mb-2" ng-if="!properties.isCluster">
+                        <span class="d-block mb-1 text-white">İşlem Seçiniz:</span>
+                        <select class="form-control form-select" ng-change="propertiesChange()" ng-model="properties.function">
+                            <option value="base">Temel</option>
+                            <option value="sum">Toplama</option>
+                            <option value="mul">Çarpma</option>
+                        </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" ng-model="properties.isCluster" type="checkbox" value="" id="clusterOpt">
+                        <label class="form-check-label text-white" for="clusterOpt">
+                          Küme olarak işlem yap
+                        </label>
+                    </div>
+                </div>
+                <div class="px-2 mt-4" ng-switch-when="Permutation">
+                    <h5 class="text-white" ng-cloak="">Permütasyon işlemi</h5>
+                    <label class="mb-2 w-100">
+                        <span class="d-block text-white w-100">Eleman adedi giriniz:</span>
+                        <input type="text" class="my-1 w-100" ng-change="propertiesChange()" ng-model="properties.optLength">
+                    </label>
+                    <div class="form-input mb-2">
+                        <span class="d-block mb-1 text-white">İşlem Seçiniz:</span>
+                        <select class="form-control form-select" ng-change="propertiesChange()" ng-model="properties.function">
+                            <option value="base">Temel</option>
+                            <option value="sum">Toplama</option>
+                            <option value="mul">Çarpma</option>
+                        </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" ng-model="properties.isIdentical" type="checkbox" value="" id="indenticalOpt">
+                        <label class="form-check-label text-white" for="indenticalOpt">
+                          Özdeş olarak işlem yap
+                        </label>
+                    </div>
+                </div>
+                <div class="px-2 mt-4" ng-switch-when="Functions">
+                    <h5 class="text-white" ng-cloak="">Fonksiyonlar</h5>
+                    <label class="mb-2 w-100">
+                        <span class="d-block text-white w-100">Fonksiyon adedi giriniz:</span>
+                        <input type="text" class="my-1 w-100" ng-change="propertiesChange()" ng-model="properties.optLength">
+                    </label>
+                    <div class="form-input mb-2">
+                        <span class="d-block mb-1 text-white">İşlem Seçiniz:</span>
+                        <select class="form-control form-select" ng-change="propertiesChange()" ng-model="properties.function">
+                            <option value="base">Temel</option>
+                            <option value="sum">Toplama</option>
+                            <option value="mul">Çarpma</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="./assets/js/app.js"></script>
+</body>
+</html>
