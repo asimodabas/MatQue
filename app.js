@@ -1,5 +1,5 @@
-const draggableList = document.querySelectorAll('.draggable');
-const droggableList = document.querySelectorAll('.droggable');
+      draggableList = document.querySelectorAll('.draggable');
+      droggableList = document.querySelectorAll('.droggable');
 
 draggableList.forEach(item => {
     item.addEventListener('dragstart', dragStart);
